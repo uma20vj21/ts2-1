@@ -1,15 +1,16 @@
-interface Obj {
-    // インデックスシグネクチャのkeyがstring型であれば.キー名で_obj[key]にアクセスできる
-    [key: string]: string;
+type BeseObject = {
+  a: string;
+  b: string;
+  [key: string]: string;
 }
 class ObjectWrapper {
-    private _obj: Obj;
+    private _obj: BeseObject;
   
     /***
      * 引数のオブジェクトのコピーを this._objに設定
      */
-    constructor(_obj: Obj) {
-       this._obj = _obj;
+    constructor(_obj: BeseObject) {
+      this._obj = _obj;
     }
   
     /**
@@ -17,7 +18,7 @@ class ObjectWrapper {
      * @return Object
      */
     get obj() {
-        return this._obj;
+      return this._obj;
     }
   
     /**
@@ -27,13 +28,13 @@ class ObjectWrapper {
      */
       
     set(key: string, val: string): boolean {
-        if(this._obj[key] !== undefined) {
-          this._obj[key] = val;
-          return true;
-        } else {
-          return false;
-        }
-        
+      if(this._obj[key] !== undefined) {
+        console.log(typeof this._obj);
+        console.log(typeof key);
+        this._obj[key] = val;
+        return true;
+      }
+      return false;
     }
   
     /**
@@ -42,16 +43,22 @@ class ObjectWrapper {
      * @param key オブジェクトのキー
      */
     get(key: string) {
+      if (key in this._obj === undefined) {
+        return undefined;
+      }
       return this._obj[key];
     }
-  
     /**
      * 指定した値を持つkeyの配列を返却。該当のものがなければ空の配列を返却。
      */
-    findKeys(val: unknown): unknown[] {
-      return keys;
+    findKeys(val: unknown): string[]{
+      //Object.keysメゾットとfilterメゾットを用いて、this._objの配列から値を取って、その値とfindkeysで指定した値が一緒かどうかを判別する
+      const result = Object.keys(this._obj).filter((key) => {
+        return this._obj[key] === val;
+      });
+      return result;
     }
-  }
+}
   
   /**
    * check script
@@ -96,4 +103,5 @@ class ObjectWrapper {
   } else {
     console.error('NG: findKeys(val)');
   }
+
 //　返却＝return の意味
